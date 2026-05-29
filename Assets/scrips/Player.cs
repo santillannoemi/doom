@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
 
 [SerializeField]
 private Transform gunPosition;
+[SerializeField]
+private InputManager inputManager;
+[SerializeField]
+private Text ammoText;
 [SerializeField]
 private UnityEvent onGunGrabbed;
 [SerializeField]
@@ -22,10 +27,34 @@ private void OnTriggerEnter(Collider other)
       if (other.CompareTag("gun"))
         {
         currentGun = other.GetComponent<Gun>();
-        currentGun.GrabGun(gunPosition);
+        currentGun.GrabGun(gunPosition, ammoText );
         onGunGrabbed?.Invoke();
+        currentGun.OnGunEmpty.AddListener(()=>
+        {
+          DropGun ();
+        });
         }  
     }
+
+    private void Update()
+  {
+    if (currentGun != null)
+    {
+      currentGun.HandleFire(inputManager.LeftButtonPressed, inputManager.LeftButtonHeld);
+      if(inputManager.RightButtonPressed)
+      {
+        currentGun.ChargeGun();
+      }
+    }
+  }
+
+  public void DropGun()
+  {
+    if(currentGun == null)return;
+    Destory(currentGun.gameObject);
+    currentGun=null;
+    onGunDropped?.Invoke();
+  }
      
 }
 
