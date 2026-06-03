@@ -29,12 +29,10 @@ private void OnTriggerEnter(Collider other)
         currentGun = other.GetComponent<Gun>();
         currentGun.GrabGun(gunPosition, ammoText );
         onGunGrabbed?.Invoke();
-        currentGun.OnGunEmpty.AddListener(()=>
-        {
-          DropGun ();
-        });
-        }  
-    }
+        currentGun.OnGunEmpty.AddListener(DropGun); 
+        }
+        
+        }
 
     private void Update()
   {
@@ -50,8 +48,8 @@ private void OnTriggerEnter(Collider other)
 
   public void DropGun()
   {
-    if(currentGun == null)return;
-    Destory(currentGun.gameObject);
+    if(currentGun == null) return;
+    Destroy(currentGun.gameObject);
     currentGun=null;
     onGunDropped?.Invoke();
   }

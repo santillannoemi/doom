@@ -27,6 +27,7 @@ public UnityEvent OnGunEmpty
 
 public void GrabGun(Transform gunPosition, Text bullerText)
     {
+
         ammoText = bullerText;
         nextFireTime =0f;
         totalBullets =gunData.totalBullets;
@@ -44,6 +45,7 @@ public void GrabGun(Transform gunPosition, Text bullerText)
     public void ChargeGun(bool playAnimation = true)
     {
         if(totalBullets <= 0 || cartridgeBullets == gunData.cartridgeSize) return ;
+        SoundManager.instance.Play(gunData.reloadSoundName);
         cartridgeBullets = Mathf.Min(gunData.cartridgeSize, totalBullets);
         totalBullets -= cartridgeBullets;
         if (playAnimation) animator.Play("Charge", 0, 0f);
@@ -71,6 +73,7 @@ public void GrabGun(Transform gunPosition, Text bullerText)
         Vector3 direction = (targetPoint- transform.position).normalized;
         bulletPivot.forward = direction;
         GameObject bullet =Instantiate(bulletPrefab, bulletPivot.position, bulletPivot.rotation);
+        SoundManager.instance.Play(gunData.shootSoundName);
         animator.Play("Shoot",0,0f);
     }
     public void HandleFire(bool pressed, bool held)
@@ -94,6 +97,7 @@ public void GrabGun(Transform gunPosition, Text bullerText)
     {
         if (totalBullets <= 0 && cartridgeBullets <= 0)
         {
+            SoundManager.instance.Play(gunData.dropSoundName);
             onGunEmpty?.Invoke();
             return;
         }
