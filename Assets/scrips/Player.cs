@@ -19,6 +19,7 @@ private Gun currentGun;
 private void  Start()
 {
 onGunDropped?.Invoke();  
+GetComponent<Health>().InitializeHealth();
 }
 
 private void OnTriggerEnter(Collider other)
@@ -52,6 +53,11 @@ private void OnTriggerEnter(Collider other)
     Destroy(currentGun.gameObject);
     currentGun=null;
     onGunDropped?.Invoke();
+  }
+  public void PushBack(Transform enemy, float force)
+  {
+    Vector3 pushDirection = (transform.position - enemy.position).normalized;
+    GetComponent<Rigidbody>().AddForce(pushDirection * force, ForceMode.Impulse);
   }
      
 }

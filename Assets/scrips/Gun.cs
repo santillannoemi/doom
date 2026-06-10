@@ -56,6 +56,13 @@ public void GrabGun(Transform gunPosition, Text bullerText)
     {
         ammoText.text =$"{cartridgeBullets} / {totalBullets}";
     }
+    private void DamageEnemy(GameObject enemy)
+    {
+        if(enemy.CompareTag("Enemy"));
+        {
+            enemy.GetComponent<Health>().TakeDamage(gunData.damage);
+        }
+    }
 
     public void Shoot()
     {
@@ -65,6 +72,7 @@ public void GrabGun(Transform gunPosition, Text bullerText)
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
         {
             targetPoint = hit.point;
+            DamageEnemy(hit.collider.gameObject);
         }
         else
         {
@@ -73,6 +81,7 @@ public void GrabGun(Transform gunPosition, Text bullerText)
         Vector3 direction = (targetPoint- transform.position).normalized;
         bulletPivot.forward = direction;
         GameObject bullet =Instantiate(bulletPrefab, bulletPivot.position, bulletPivot.rotation);
+        bullet.transform.LookAt(targetPoint);
         SoundManager.instance.Play(gunData.shootSoundName);
         animator.Play("Shoot",0,0f);
     }
