@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyFollow : MonoBehaviour
+public class EnemyFollow : Enemy
 {
 
 [SerializeField]
@@ -9,26 +9,21 @@ private float speed = 3f;
 [SerializeField]
 private float yPosicion =2f;
 [SerializeField]
-private float damage =20f;
-[SerializeField]
 private float pushForce=5f;
-private Transform player;
 private bool isFollowing = true ;
-private Animator animator;
-private void Start() 
-{    
-animator = GetComponent<Animator>();    
-GetComponent<Health>().InitializeHealth();
-}
 private void OnEnable()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        base.OnEnable();
+        animator.Play("Appear", 0, 0f);
+        isFollowing=true;
+        SoundManager.instance.Play("drop");
     }
-    public void TakeDamage()
+    public override void TakeDamage()
     {
+        SoundManager.instance.Play("cacodemon_damage");
         if(!isFollowing )return;
         isFollowing =false;
-        animator.Play("Damage", 0, 0f);
+        base.TakeDamage();
         StartCoroutine(StopAndFollow());
     }
     private IEnumerator StopAndFollow()
@@ -39,11 +34,9 @@ private void OnEnable()
     }
     public void Die()
     {
-        StopAllCoroutines();
-        GetComponent<Collider>().enabled=false;
-        isFollowing =false ;
-        animator.Play("Death", 0, 0f);
-        StartCoroutine(DieCoroutine());
+        SoundManager.instance.Play("cacodemon_die");
+        isFollowing =false;
+        base.Die();
     }
     private IEnumerator DieCoroutine()
     {
@@ -62,6 +55,7 @@ private void OnEnable()
     {
         if(collision.gameObject.CompareTag("Player"))
         {
+            SoundManager.instance.Play("cacodemon_attak");
             collision.gameObject.GetComponent<Player>().PushBack(transform, pushForce);
             collision.gameObject.GetComponent<Health>().TakeDamage(damage);
         }
