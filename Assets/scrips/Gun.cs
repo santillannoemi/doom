@@ -58,7 +58,7 @@ public void GrabGun(Transform gunPosition, Text bullerText)
     }
     private void DamageEnemy(GameObject enemy)
     {
-        if(enemy.CompareTag("Enemy"));
+        if(enemy.tag=="Enemy")
         {
             enemy.GetComponent<Health>().TakeDamage(gunData.damage);
         }

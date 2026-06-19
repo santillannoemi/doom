@@ -25,7 +25,7 @@ GetComponent<Health>().InitializeHealth();
 private void OnTriggerEnter(Collider other)
 
     {
-      if (other.CompareTag("gun"))
+      if (other.CompareTag("gun") && currentGun == null)
         {
         currentGun = other.GetComponent<Gun>();
         currentGun.GrabGun(gunPosition, ammoText );
